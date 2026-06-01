@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qual Animal Fortune Você É?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:          #060105;
+      --bg2:         #0f0308;
+      --gold:        #c9a227;
+      --gold-light:  #f0cc5a;
+      --gold-dim:    #7a601a;
+      --red:         #7a0000;
+      --red-mid:     #a01010;
+      --red-bright:  #cc2828;
+      --cream:       #f5e6c8;
+      --cream-dim:   #b8a070;
+      --cream-faint: #7a6040;
+      --card-bg:     rgba(12, 2, 6, 0.94);
+      --border:      rgba(201, 162, 39, 0.3);
+      --border-dim:  rgba(201, 162, 39, 0.12);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--cream);
+      font-family: 'Crimson Text', serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ─── Layered background ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 15% 15%, rgba(122, 0, 0, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 85% 85%, rgba(201, 162, 39, 0.09) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 60% at 50% 100%, rgba(122, 0, 0, 0.12) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(201, 162, 39, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201, 162, 39, 0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── Floating particles ─── */
+    #particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0;
+      animation: particleRise linear infinite;
+    }
+
+    @keyframes particleRise {
+      0%   { opacity: 0;   transform: translateY(100vh) scale(0.3); }
+      8%   { opacity: 0.35; }
+      92%  { opacity: 0.15; }
+      100% { opacity: 0;   transform: translateY(-30px) scale(1); }
+    }
+
+    /* ─── Container / Layout ─── */
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ─── Screens ─── */
+    .screen {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .screen.active {
+      display: flex;
+      animation: screenIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes screenIn {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Card ─── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 48px 40px;
+      width: 100%;
+      position: relative;
+      box-shadow:
+        0 0 60px rgba(122, 0, 0, 0.2),
+        0 0 120px rgba(201, 162, 39, 0.04),
+        inset 0 1px 0 rgba(201, 162, 39, 0.08);
+    }
+
+    /* Corner brackets */
+    .card::before, .card::after,
+    .card .corner-br, .card .corner-tl-inner {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      opacity: 0.55;
+    }
+
+    .card::before {
+      top: 8px; left: 8px;
+      border-top: 1.5px solid var(--gold);
+      border-left: 1.5px solid var(--gold);
+    }
+
+    .card::after {
+      top: 8px; right: 8px;
+      border-top: 1.5px solid var(--gold);
+      border-right: 1.5px solid var(--gold);
+    }
+
+    .corner-bl {
+      position: absolute;
+      bottom: 8px; left: 8px;
+      width: 22px; height: 22px;
+      border-bottom: 1.5px solid var(--gold);
+      border-left: 1.5px solid var(--gold);
+      opacity: 0.55;
+    }
+
+    .corner-br {
+      position: absolute;
+      bottom: 8px; right: 8px;
+      width: 22px; height: 22px;
+      border-bottom: 1.5px solid var(--gold);
+      border-right: 1.5px solid var(--gold);
+      opacity: 0.55;
+    }
+
+    /* ─── Typography ─── */
+    .label-sub {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--cream-faint);
+      text-align: center;
+      display: block;
+    }
+
+    .title-hero {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1.55rem, 5.5vw, 2.6rem);
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.25;
+      color: var(--gold);
+      text-shadow:
+        0 0 24px rgba(201, 162, 39, 0.55),
+        0 0 60px rgba(201, 162, 39, 0.18);
+    }
+
+    .title-section {
+      font-family: 'Cinzel', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--gold);
+      text-align: center;
+    }
+
+    .body-copy {
+      font-size: 1.1rem;
+      line-height: 1.75;
+      color: var(--cream-dim);
+      text-align: center;
+    }
+
+    /* ─── Divider ─── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold-dim), transparent);
+    }
+    .divider span {
+      color: var(--gold-dim);
+      font-size: 0.75rem;
+    }
+
+    /* ─── Buttons ─── */
+    .btn-primary {
+      display: block;
+      width: 100%;
+      padding: 17px 32px;
+      background: linear-gradient(145deg, #6a0000 0%, #3a0000 100%);
+      border: 1px solid var(--gold-dim);
+      color: var(--gold-light);
+      font-family: 'Cinzel', serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201, 162, 39, 0.12) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .btn-primary:hover {
+      border-color: var(--gold);
+      box-shadow: 0 0 24px rgba(201, 162, 39, 0.22), 0 0 48px rgba(122, 0, 0, 0.4);
+      transform: translateY(-2px);
+    }
+    .btn-primary:hover::after { opacity: 1; }
+    .btn-primary:active        { transform: translateY(0); }
+
+    .btn-primary:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    .btn-primary:disabled::after { display: none; }
+
+    /* ─── Welcome screen ─── */
+    .animals-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .animal-icon {
+      font-size: 2.1rem;
+      animation: floatBob 3.2s ease-in-out infinite;
+      filter: drop-shadow(0 0 10px rgba(201, 162, 39, 0.35));
+    }
+    .animal-icon:nth-child(2) { animation-delay: 0.3s; }
+    .animal-icon:nth-child(3) { animation-delay: 0.65s; }
+    .animal-icon:nth-child(4) { animation-delay: 0.95s; }
+    .animal-icon:nth-child(5) { animation-delay: 1.25s; }
+    .animal-icon:nth-child(6) { animation-delay: 1.55s; }
+    .animal-icon:nth-child(7) { animation-delay: 1.85s; }
+
+    @keyframes floatBob {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%       { transform: translateY(-9px) scale(1.05); }
+    }
+
+    /* ─── Form screen ─── */
+    .form-field { margin-bottom: 20px; }
+
+    .field-label {
+      display: block;
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 8px;
+    }
+
+    .field-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(201, 162, 39, 0.025);
+      border: 1px solid rgba(201, 162, 39, 0.18);
+      border-radius: 2px;
+      color: var(--cream);
+      font-family: 'Crimson Text', serif;
+      font-size: 1.1rem;
+      outline: none;
+      transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+    }
+    .field-input::placeholder { color: rgba(245, 230, 200, 0.18); }
+    .field-input:focus {
+      border-color: var(--gold-dim);
+      background: rgba(201, 162, 39, 0.05);
+      box-shadow: 0 0 0 1px rgba(201, 162, 39, 0.08);
+    }
+    .field-input.is-error { border-color: var(--red-bright); }
+
+    .field-error {
+      display: none;
+      margin-top: 6px;
+      font-size: 0.875rem;
+      color: var(--red-bright);
+    }
+
+    @keyframes shakeX {
+      0%, 100% { transform: translateX(0); }
+      20%, 60%  { transform: translateX(-7px); }
+      40%, 80%  { transform: translateX(7px); }
+    }
+    .shake { animation: shakeX 0.38s ease; }
+
+    /* ─── Quiz screen ─── */
+    .progress-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      color: var(--cream-faint);
+      text-align: right;
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 3px;
+      background: rgba(201, 162, 39, 0.1);
+      border-radius: 2px;
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--red-mid), var(--gold));
+      border-radius: 2px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      right: -1px; top: 50%;
+      transform: translateY(-50%);
+      width: 9px; height: 9px;
+      background: var(--gold);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--gold), 0 0 16px rgba(201, 162, 39, 0.4);
+    }
+
+    .question-text {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1rem, 3.5vw, 1.22rem);
+      font-weight: 600;
+      color: var(--cream);
+      line-height: 1.55;
+      text-align: center;
+      margin-bottom: 26px;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .option-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 15px 18px;
+      background: rgba(201, 162, 39, 0.02);
+      border: 1px solid rgba(201, 162, 39, 0.13);
+      border-radius: 2px;
+      color: var(--cream-dim);
+      font-family: 'Crimson Text', serif;
+      font-size: 1.05rem;
+      line-height: 1.4;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s, color 0.2s;
+    }
+
+    .option-btn:hover {
+      background: rgba(201, 162, 39, 0.07);
+      border-color: var(--gold-dim);
+      transform: translateX(5px);
+      color: var(--cream);
+    }
+
+    .option-btn.is-selected {
+      background: rgba(201, 162, 39, 0.11);
+      border-color: var(--gold);
+      color: var(--gold-light);
+      transform: translateX(5px);
+    }
+
+    .option-letter {
+      flex-shrink: 0;
+      width: 26px; height: 26px;
+      border: 1px solid var(--gold-dim);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      color: var(--gold-dim);
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .option-btn.is-selected .option-letter {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--bg);
+    }
+
+    .next-wrap { margin-top: 22px; }
+
+    /* ─── Result screen ─── */
+    .result-reveal {
+      text-align: center;
+      margin: 10px 0 4px;
+    }
+
+    .result-emoji-big {
+      display: block;
+      font-size: 7.5rem;
+      line-height: 1;
+      animation: popIn 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      filter: drop-shadow(0 0 22px rgba(201, 162, 39, 0.55));
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.1) rotate(-25deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg);     opacity: 1; }
+    }
+
+    .result-animal-name {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1.35rem, 4.5vw, 1.9rem);
+      color: var(--gold);
+      margin-top: 14px;
+      animation: goldPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes goldPulse {
+      0%, 100% { text-shadow: 0 0 18px rgba(201, 162, 39, 0.4); }
+      50%       { text-shadow: 0 0 36px rgba(201, 162, 39, 0.7), 0 0 72px rgba(201, 162, 39, 0.18); }
+    }
+
+    .result-desc-box {
+      font-size: 1.08rem;
+      line-height: 1.82;
+      color: var(--cream-dim);
+      text-align: center;
+      padding: 22px 20px;
+      background: rgba(201, 162, 39, 0.025);
+      border: 1px solid var(--border-dim);
+      border-radius: 2px;
+    }
+
+    /* ─── Disclaimer ─── */
+    .disclaimer {
+      font-size: 0.72rem;
+      color: rgba(184, 160, 112, 0.35);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    /* ─── Loader ─── */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      animation: loaderFade 0.4s ease 0.9s both;
+    }
+    @keyframes loaderFade { to { opacity: 0; pointer-events: none; } }
+
+    .loader-dragon {
+      font-size: 4rem;
+      animation: dragonSpin 1s ease-in-out infinite alternate;
+    }
+    @keyframes dragonSpin {
+      from { transform: scale(0.85) rotate(-5deg); }
+      to   { transform: scale(1.1) rotate(5deg); }
+    }
+
+    /* ─── Confetti pieces ─── */
+    .confetti-piece {
+      position: fixed;
+      top: -30px;
+      pointer-events: none;
+      z-index: 999;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall {
+      0%   { opacity: 1; transform: translateY(0) rotate(0deg); }
+      100% { opacity: 0; transform: translateY(110vh) rotate(540deg); }
+    }
+
+    /* ─── Spacing helpers ─── */
+    .mt-4  { margin-top: 4px; }
+    .mt-8  { margin-top: 8px; }
+    .mt-12 { margin-top: 12px; }
+    .mt-16 { margin-top: 16px; }
+    .mt-20 { margin-top: 20px; }
+    .mt-24 { margin-top: 24px; }
+    .mt-28 { margin-top: 28px; }
+    .mt-32 { margin-top: 32px; }
+    .mb-4  { margin-bottom: 4px; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 480px) {
+      .card { padding: 36px 22px; }
+      .animal-icon { font-size: 1.7rem; }
+      .result-emoji-big { font-size: 6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loader -->
+<div id="loader">
+  <span class="loader-dragon">🐉</span>
+</div>
+
+<!-- Background particles -->
+<div id="particles"></div>
+
+<div class="page-wrap">
+
+  <!-- ══════════════════════════════
+       SCREEN 1 · Welcome
+  ══════════════════════════════ -->
+  <div class="screen active" id="screen-welcome">
+    <div class="card">
+      <div class="corner-bl"></div>
+      <div class="corner-br"></div>
+
+      <span class="label-sub mb-4">PG Soft · Fortune Universe</span>
+
+      <h1 class="title-hero mt-16">
+        Qual Animal<br>Fortune Você É?
+      </h1>
+
+      <div class="divider mt-20"><span>✦</span></div>
+
+      <div class="animals-row mt-20">
+        <span class="animal-icon">🐯</span>
+        <span class="animal-icon">🐍</span>
+        <span class="animal-icon">🐰</span>
+        <span class="animal-icon">🐂</span>
+        <span class="animal-icon">🐭</span>
+        <span class="animal-icon">🐉</span>
+        <span class="animal-icon">🐴</span>
+      </div>
+
+      <div class="divider mt-20"><span>✦</span></div>
+
+      <p class="body-copy mt-20">
+        Responda 5 perguntas e descubra qual animal da família Fortune revela o seu estilo de jogo.
+      </p>
+
+      <button class="btn-primary mt-28" onclick="showScreen('form')">
+        ✦ &nbsp;Descobrir meu animal&nbsp; ✦
+      </button>
+
+      <p class="disclaimer mt-20">Apenas para fins de entretenimento.<br>Jogue sempre com responsabilidade.</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       SCREEN 2 · Form
+  ══════════════════════════════ -->
+  <div class="screen" id="screen-form">
+    <div class="card">
+      <div class="corner-bl"></div>
+      <div class="corner-br"></div>
+
+      <h2 class="title-section">Antes de revelar…</h2>
+      <p class="body-copy mt-12" style="font-size:1rem">
+        Diga-nos quem você é para receber seu resultado exclusivo.
+      </p>
+
+      <div class="divider mt-20"><span>✦</span></div>
+
+      <form id="lead-form" novalidate class="mt-24">
+
+        <div class="form-field">
+          <label class="field-label" for="f-nome">Nome completo</label>
+          <input class="field-input" type="text" id="f-nome" placeholder="Seu nome completo" autocomplete="name">
+          <span class="field-error" id="err-nome">Informe seu nome completo (nome e sobrenome)</span>
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="f-email">E-mail</label>
+          <input class="field-input" type="email" id="f-email" placeholder="seu@email.com" autocomplete="email">
+          <span class="field-error" id="err-email">Informe um endereço de e-mail válido</span>
+        </div>
+
+        <div class="form-field" style="margin-bottom:28px">
+          <label class="field-label" for="f-tel">Telefone / WhatsApp</label>
+          <input class="field-input" type="tel" id="f-tel" placeholder="(11) 99999-9999" autocomplete="tel">
+          <span class="field-error" id="err-tel">Informe um número de telefone válido</span>
+        </div>
+
+        <button class="btn-primary" type="submit" id="btn-submit" disabled>
+          ✦ &nbsp;Iniciar quiz&nbsp; ✦
+        </button>
+      </form>
+
+      <p class="disclaimer mt-20">Seus dados são tratados com segurança e não serão compartilhados com terceiros.</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       SCREEN 3 · Quiz
+  ══════════════════════════════ -->
+  <div class="screen" id="screen-quiz">
+    <div class="card">
+      <div class="corner-bl"></div>
+      <div class="corner-br"></div>
+
+      <div class="progress-label" id="prog-label">Pergunta 1 de 5</div>
+      <div class="progress-track">
+        <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+      </div>
+
+      <h3 class="question-text" id="q-text"></h3>
+
+      <div class="options-list" id="opts-list"></div>
+
+      <div class="next-wrap">
+        <button class="btn-primary" id="btn-next" style="display:none" onclick="nextQuestion()">
+          ✦ &nbsp;Próxima pergunta&nbsp; ✦
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       SCREEN 4 · Result
+  ══════════════════════════════ -->
+  <div class="screen" id="screen-result">
+    <div class="card">
+      <div class="corner-bl"></div>
+      <div class="corner-br"></div>
+
+      <span class="label-sub">Seu animal Fortune é</span>
+
+      <div class="result-reveal mt-16">
+        <span class="result-emoji-big" id="res-emoji">🐯</span>
+        <div class="result-animal-name" id="res-name">Fortune Tiger</div>
+      </div>
+
+      <div class="divider mt-20"><span>✦</span></div>
+
+      <div class="result-desc-box mt-20" id="res-desc"></div>
+
+      <button class="btn-primary mt-24" onclick="playAgain()">
+        ✦ &nbsp;Jogar novamente&nbsp; ✦
+      </button>
+
+      <p class="disclaimer mt-20">Jogue com responsabilidade. Defina seus limites antes de começar.</p>
+    </div>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+// ══════════════════════════════════════
+// CONFIG — Cole aqui a URL do seu Google Apps Script
+// ══════════════════════════════════════
+
+const SHEETS_ENDPOINT = window.SHEETS_ENDPOINT || 'https://script.google.com/macros/s/AKfycbxdHI7ReXEbvH2bKC5o_1eNCyH3WgHlqlJEjMcZ_CeJk_aGuK4flFY3ctgk5bpD-sYBug/exec';
+
+// ══════════════════════════════════════
+// DATA — Animals
+// ══════════════════════════════════════
+
+const ANIMALS = {
+  tiger:  { emoji: '🐯', name: 'Fortune Tiger'  },
+  snake:  { emoji: '🐍', name: 'Fortune Snake'  },
+  rabbit: { emoji: '🐰', name: 'Fortune Rabbit' },
+  ox:     { emoji: '🐂', name: 'Fortune Ox'     },
+  mouse:  { emoji: '🐭', name: 'Fortune Mouse'  },
+  dragon: { emoji: '🐉', name: 'Fortune Dragon' },
+  horse:  { emoji: '🐴', name: 'Fortune Horse'  },
+};
+
+const DESCS = {
+  tiger:  'Corajoso, impulsivo e sem medo de arriscar. Você não espera a sorte chegar — você vai atrás dela. O tigre nunca recua, e você também não. Só lembre: até o tigre mais feroz sabe quando descansar. Jogue com responsabilidade e defina seu limite antes de começar.',
+  snake:  'Frio, inteligente e sempre um passo à frente. Você não age por impulso — você observa, planeja e ataca na hora certa. Continue assim: um jogador inteligente também sabe que o melhor movimento às vezes é parar. Jogue com consciência.',
+  rabbit: 'A sorte te acompanha onde você vai! Você joga leve, sem estresse, e ainda assim as coisas tendem a dar certo. Mantenha essa leveza também nos limites: diversão de verdade é aquela que cabe no seu bolso. Jogue com responsabilidade.',
+  ox:     'Paciente, firme e consistente. Você constrói seus ganhos aos poucos e sabe exatamente quando parar. Esse equilíbrio é a sua maior força — dentro e fora do jogo. Continue sendo esse exemplo de jogo responsável.',
+  mouse:  'Esperto demais! Você encontra oportunidade onde ninguém vê e nunca fica preso numa situação ruim por muito tempo. Use essa esperteza também pra definir seus limites de tempo e dinheiro antes de jogar. Jogador esperto joga com responsabilidade.',
+  dragon: 'Você não joga pra participar — você joga pra dominar. Confiante, ambicioso e com presença de sobra. Mas todo grande dragão tem sabedoria além do poder: saiba impor limites a si mesmo. Domine o jogo sem deixar o jogo te dominar.',
+  horse:  'Livre, instintivo e impossível de prever. Você segue o feeling e muitas vezes acerta quando ninguém esperava. Só não esqueça: liberdade de verdade é jogar sem comprometer o que importa. Defina seus limites e corra solto dentro deles.',
+};
+
+// ══════════════════════════════════════
+// DATA — Questions
+// ══════════════════════════════════════
+
+const QUESTIONS = [
+  {
+    text: 'Como você costuma entrar num jogo?',
+    opts: [
+      { text: 'Já começo apostando alto, sem medo',               s: { tiger: 3, dragon: 2 } },
+      { text: 'Fico observando um pouco antes de apostar',         s: { snake: 3, ox: 2 } },
+      { text: 'Vou aumentando aos poucos conforme o feeling',      s: { horse: 3, mouse: 1 } },
+      { text: 'Jogo no automático e torço pra sorte chegar',       s: { rabbit: 3, mouse: 1 } },
+    ],
+  },
+  {
+    text: 'Quando você tá perdendo, o que faz?',
+    opts: [
+      { text: 'Aumento a aposta pra recuperar logo',               s: { tiger: 3, dragon: 1 } },
+      { text: 'Paro, respiro e mudo de tática',                    s: { snake: 3, ox: 1 } },
+      { text: 'Diminuo as apostas e espero a sorte voltar',        s: { ox: 3, horse: 1 } },
+      { text: 'Rio e continuo jogando leve, sem estresse',         s: { rabbit: 3, mouse: 1 } },
+      { text: 'Troco de jogo na hora, busco outra oportunidade',   s: { mouse: 3, horse: 1 } },
+    ],
+  },
+  {
+    text: 'Apareceu uma aposta com prêmio enorme mas difícil de ganhar. O que você faz?',
+    opts: [
+      { text: 'Entro sem pensar, é tudo ou nada!',                 s: { tiger: 3, rabbit: 1 } },
+      { text: 'Analiso se vale a pena antes de decidir',           s: { snake: 3, mouse: 2 } },
+      { text: 'Só entro depois de acompanhar o jogo por um tempo', s: { ox: 3, snake: 1 } },
+      { text: 'Sigo o instinto — se bateu vontade, entro',        s: { horse: 3, rabbit: 1 } },
+      { text: 'Entro porque quero dominar e sair por cima',        s: { dragon: 3, tiger: 1 } },
+    ],
+  },
+  {
+    text: 'O que mais te empolga num jogo Fortune?',
+    opts: [
+      { text: 'Aquela adrenalina de multiplicador absurdo',         s: { tiger: 3, dragon: 2 } },
+      { text: 'Entender a mecânica e usar isso a seu favor',        s: { snake: 3, ox: 1 } },
+      { text: 'A vibe, o visual bonito e a música do jogo',        s: { rabbit: 3, horse: 2 } },
+      { text: 'Ganhar de forma consistente, sem sustos',            s: { ox: 3, mouse: 1 } },
+      { text: 'Terminar com o maior lucro da sessão',               s: { dragon: 3, tiger: 1 } },
+    ],
+  },
+  {
+    text: 'Você acertou um prêmio enorme agora. O que faz primeiro?',
+    opts: [
+      { text: 'Aposto tudo de novo, quero multiplicar mais!',       s: { tiger: 3, dragon: 1 } },
+      { text: 'Guardo a maior parte e jogo só com o lucro',         s: { ox: 3, snake: 2 } },
+      { text: 'Comemoro muito e conto pra todo mundo',              s: { rabbit: 3, horse: 1 } },
+      { text: 'Planejo a próxima jogada com calma',                 s: { snake: 3, mouse: 2 } },
+      { text: 'Uso o momento pra entrar em apostas ainda maiores',  s: { dragon: 3, tiger: 1 } },
+      { text: 'Saco e vou embora — soube a hora de parar',         s: { horse: 3, mouse: 1 } },
+    ],
+  },
+];
+
+const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+
+let qIdx        = 0;
+let scores      = {};
+let lastQScores = {};
+let pickedOpt   = null;
+let userData    = {};
+
+function resetScores() {
+  scores      = { tiger: 0, snake: 0, rabbit: 0, ox: 0, mouse: 0, dragon: 0, horse: 0 };
+  lastQScores = { tiger: 0, snake: 0, rabbit: 0, ox: 0, mouse: 0, dragon: 0, horse: 0 };
+}
+
+// ══════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══════════════════════════════════════
+// FORM — Validation
+// ══════════════════════════════════════
+
+// Validators: return error string or null if valid
+const VALIDATORS = {
+  nome(val) {
+    const v = val.trim();
+    if (!v) return 'Digite seu nome completo';
+    if (!/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/.test(v)) return 'Use apenas letras e espaços';
+    if (v.length < 6) return 'Digite seu nome completo';
+    if (v.split(/\s+/).filter(Boolean).length < 2) return 'Digite seu nome completo';
+    return null;
+  },
+  email(val) {
+    const v = val.trim();
+    if (!v) return 'Digite um e-mail válido';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return 'Digite um e-mail válido';
+    return null;
+  },
+  tel(val) {
+    const d = val.replace(/\D/g, '');
+    if (!d) return 'Digite um telefone válido com DDD';
+    if (d.length < 10 || d.length > 11) return 'Digite um telefone válido com DDD';
+    if (/^(\d)\1{9,}$/.test(d)) return 'Digite um telefone válido com DDD';
+    return null;
+  },
+};
+
+// Track which fields the user has interacted with
+const touched = { nome: false, email: false, tel: false };
+
+function validateField(field) {
+  const input = document.getElementById('f-' + field);
+  const err   = VALIDATORS[field](input.value);
+  const errEl = document.getElementById('err-' + field);
+  if (touched[field]) {
+    input.classList.toggle('is-error', !!err);
+    errEl.textContent    = err || '';
+    errEl.style.display  = err ? 'block' : 'none';
+  }
+  return !err;
+}
+
+function updateSubmitBtn() {
+  const allValid =
+    !VALIDATORS.nome(document.getElementById('f-nome').value) &&
+    !VALIDATORS.email(document.getElementById('f-email').value) &&
+    !VALIDATORS.tel(document.getElementById('f-tel').value);
+  document.getElementById('btn-submit').disabled = !allValid;
+}
+
+['nome', 'email', 'tel'].forEach(field => {
+  const el = document.getElementById('f-' + field);
+
+  el.addEventListener('blur', () => {
+    touched[field] = true;
+    validateField(field);
+    updateSubmitBtn();
+  });
+
+  el.addEventListener('input', () => {
+    if (touched[field]) validateField(field);
+    updateSubmitBtn();
+  });
+});
+
+// Phone mask
+document.getElementById('f-tel').addEventListener('input', function () {
+  let d = this.value.replace(/\D/g, '').slice(0, 11);
+  if      (d.length > 6) d = '(' + d.slice(0,2) + ') ' + d.slice(2,7) + '-' + d.slice(7);
+  else if (d.length > 2) d = '(' + d.slice(0,2) + ') ' + d.slice(2);
+  else if (d.length > 0) d = '(' + d;
+  this.value = d;
+}, true);
+
+document.getElementById('lead-form').addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  // Force-touch all fields and re-validate
+  ['nome', 'email', 'tel'].forEach(f => { touched[f] = true; });
+  const ok = ['nome', 'email', 'tel'].map(validateField).every(Boolean);
+
+  if (!ok) {
+    this.classList.add('shake');
+    this.addEventListener('animationend', () => this.classList.remove('shake'), { once: true });
+    return;
+  }
+
+  userData = {
+    nome:      document.getElementById('f-nome').value.trim(),
+    email:     document.getElementById('f-email').value.trim(),
+    telefone:  document.getElementById('f-tel').value.trim(),
+  };
+  startQuiz();
+});
+
+// ══════════════════════════════════════
+// QUIZ
+// ══════════════════════════════════════
+
+function startQuiz() {
+  qIdx = 0;
+  resetScores();
+  renderQuestion();
+  showScreen('quiz');
+}
+
+function renderQuestion() {
+  const q     = QUESTIONS[qIdx];
+  const total = QUESTIONS.length;
+
+  document.getElementById('prog-label').textContent = `Pergunta ${qIdx + 1} de ${total}`;
+  document.getElementById('prog-fill').style.width  = `${(qIdx / total) * 100}%`;
+  document.getElementById('q-text').textContent     = q.text;
+
+  const list = document.getElementById('opts-list');
+  list.innerHTML = '';
+
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML =
+      `<span class="option-letter">${LETTERS[i]}</span><span>${opt.text}</span>`;
+    btn.addEventListener('click', () => pickOption(i, btn));
+    list.appendChild(btn);
+  });
+
+  pickedOpt = null;
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.style.display = 'none';
+  nextBtn.textContent = qIdx === QUESTIONS.length - 1
+    ? '✦  Ver meu resultado  ✦'
+    : '✦  Próxima pergunta  ✦';
+}
+
+function pickOption(idx, btnEl) {
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('is-selected'));
+  btnEl.classList.add('is-selected');
+  pickedOpt = idx;
+  document.getElementById('btn-next').style.display = 'block';
+}
+
+function nextQuestion() {
+  if (pickedOpt === null) return;
+
+  const optScores = QUESTIONS[qIdx].opts[pickedOpt].s;
+
+  // Track this question's scores as potential tiebreaker
+  lastQScores = { tiger: 0, snake: 0, rabbit: 0, ox: 0, mouse: 0, dragon: 0, horse: 0 };
+  Object.entries(optScores).forEach(([a, pts]) => {
+    scores[a]     = (scores[a] || 0) + pts;
+    lastQScores[a] = pts;
+  });
+
+  if (qIdx === QUESTIONS.length - 1) {
+    showResult();
+    return;
+  }
+
+  qIdx++;
+  renderQuestion();
+}
+
+// ══════════════════════════════════════
+// RESULT
+// ══════════════════════════════════════
+
+function getWinner() {
+  let best = -1, winners = [];
+
+  Object.entries(scores).forEach(([a, s]) => {
+    if (s > best)      { best = s; winners = [a]; }
+    else if (s === best) { winners.push(a); }
+  });
+
+  if (winners.length === 1) return winners[0];
+
+  // Tiebreak: highest score on last answered question
+  let topLast = -1, winner = winners[0];
+  winners.forEach(a => {
+    if ((lastQScores[a] || 0) > topLast) {
+      topLast = lastQScores[a] || 0;
+      winner  = a;
+    }
+  });
+  return winner;
+}
+
+function showResult() {
+  const key    = getWinner();
+  const animal = ANIMALS[key];
+
+  document.getElementById('res-emoji').textContent = animal.emoji;
+  document.getElementById('res-name').textContent  = animal.name;
+  document.getElementById('res-desc').textContent  = DESCS[key];
+
+  // Send lead to Google Sheets
+  const lead = {
+    nome:      userData.nome,
+    email:     userData.email,
+    telefone:  userData.telefone,
+    animal:    animal.name,
+    timestamp: new Date().toISOString(),
+  };
+  sendLead(lead);
+
+  showScreen('result');
+  spawnConfetti();
+}
+
+// ══════════════════════════════════════
+// LEAD SUBMISSION — Google Sheets
+// ══════════════════════════════════════
+
+function sendLead(lead) {
+  if (!SHEETS_ENDPOINT) {
+    console.warn('[Fortune Quiz] SHEETS_ENDPOINT não configurado. Defina a variável window.SHEETS_ENDPOINT com a URL do seu Google Apps Script.');
+    return;
+  }
+  // no-cors: Apps Script does not support CORS for POST; response is opaque but data is received
+  fetch(SHEETS_ENDPOINT, {
+    method:  'POST',
+    mode:    'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify(lead),
+  }).catch(err => console.warn('[Fortune Quiz] Erro ao enviar lead:', err));
+}
+
+// ══════════════════════════════════════
+// PLAY AGAIN
+// ══════════════════════════════════════
+
+function playAgain() {
+  const form = document.getElementById('lead-form');
+  form.reset();
+  // Reset touched state and errors
+  ['nome', 'email', 'tel'].forEach(f => {
+    touched[f] = false;
+    document.getElementById('f-' + f).classList.remove('is-error');
+    document.getElementById('err-' + f).style.display = 'none';
+  });
+  document.getElementById('btn-submit').disabled = true;
+  userData = {};
+  showScreen('welcome');
+}
+
+// ══════════════════════════════════════
+// CONFETTI
+// ══════════════════════════════════════
+
+function spawnConfetti() {
+  const symbols = ['✦', '★', '◆', '✧', '◈'];
+  const colors  = ['#c9a227', '#f0cc5a', '#8b0000', '#cc2828', '#f5e6c8'];
+
+  for (let i = 0; i < 28; i++) {
+    setTimeout(() => {
+      const el = document.createElement('span');
+      el.className = 'confetti-piece';
+      el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      const dur = (Math.random() * 1.8 + 1.8).toFixed(2);
+      el.style.cssText = `
+        left: ${(Math.random() * 95 + 2).toFixed(1)}vw;
+        font-size: ${(Math.random() * 14 + 7).toFixed(0)}px;
+        color: ${colors[Math.floor(Math.random() * colors.length)]};
+        animation-duration: ${dur}s;
+        animation-delay: 0s;
+      `;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), (parseFloat(dur) + 0.3) * 1000);
+    }, i * 65);
+  }
+}
+
+// ══════════════════════════════════════
+// BACKGROUND PARTICLES
+// ══════════════════════════════════════
+
+(function buildParticles() {
+  const wrap = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = (Math.random() * 2.5 + 1).toFixed(1);
+    p.style.cssText = `
+      left: ${(Math.random() * 100).toFixed(1)}%;
+      width: ${size}px;
+      height: ${size}px;
+      animation-duration: ${(Math.random() * 16 + 10).toFixed(1)}s;
+      animation-delay: ${(Math.random() * 12).toFixed(1)}s;
+    `;
+    wrap.appendChild(p);
+  }
+})();
+</script>
+</body>
+</html>
